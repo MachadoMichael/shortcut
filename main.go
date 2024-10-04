@@ -42,7 +42,7 @@ func main() {
 			alias := os.Args[2]
 			command := os.Args[3]
 
-			InsertInJson(alias, command, dictionary)
+			insertInJson(alias, command, dictionary)
 			fmt.Println("The command has been saved")
 			return
 		}
@@ -56,20 +56,19 @@ func main() {
 			args := strings.Split(command, " ")
 			c := exec.Command(args[0], args[1:]...)
 
-			output, err := c.CombinedOutput() // CombinedOutput returns both stdout and stderr
+			output, err := c.CombinedOutput()
 			if err != nil {
 				fmt.Printf("Error executing command: %v\n", err)
 				return
 			}
 
-			// Print the output
 			fmt.Printf("Command output: %s\n", output)
 			return
 		}
 	}
 }
 
-func InsertInJson(alias, data string, dictionary map[string]string) {
+func insertInJson(alias, data string, dictionary map[string]string) {
 	dictionary[alias] = data
 	saveJson(dictionary)
 }
