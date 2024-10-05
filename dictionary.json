@@ -1,1 +1,3 @@
-{"docker":"open -a Docker"}
+{
+	"docker":"open -a Docker"
+}
