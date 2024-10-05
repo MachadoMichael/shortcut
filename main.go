@@ -40,8 +40,12 @@ func main() {
 	if numberOfArgs == 3 {
 		if os.Args[1] == "run" {
 			alias := os.Args[2]
-			command := dic[alias]
-			fmt.Println(command)
+			command, exist := dic[alias]
+			if !exist {
+				fmt.Println("The command does not exist")
+				return
+			}
+
 			args := strings.Split(command, " ")
 			c := exec.Command(args[0], args[1:]...)
 
