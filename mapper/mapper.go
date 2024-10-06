@@ -31,7 +31,7 @@ func (m *Mapper) InsertInJson(alias, data string, dic map[string]string) {
 
 func (m *Mapper) saveJson(dic map[string]string) {
 	json_data, _ := json.Marshal(dic)
-	err := os.WriteFile(". .json", json_data, 0644)
+	err := os.WriteFile("dictionary.json", json_data, 0644)
 	if err != nil {
 		panic(err)
 	}

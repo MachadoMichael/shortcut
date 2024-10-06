@@ -13,7 +13,7 @@ func main() {
 
 	m := &mapper.Mapper{}
 
-	dic, err := m.BuildMap("dictionary.json")
+	dic, err := m.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
