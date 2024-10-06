@@ -69,10 +69,17 @@ Running a Command
 When the run argument is invoked, the application retrieves and executes the command associated with the provided alias:
 
 ```
-if cmd, exists := commands[alias]; exists {
-    exec.Command(cmd).Run()
+command, exist := dic[alias]
+if !exist {
+	fmt.Println("The command does not exist")
+	return
 }
 ```
+
+## Build
+You can use make to build the application, using command `make build`.
+Another option is to use `make all` to build and set alias as "sc" on zsh.
+
 
 Conclusion
 Shortcut simplifies the process of managing long commands by allowing users to create easy-to-remember aliases. This utility is especially beneficial for professionals who frequently connect to multiple virtual machines or execute lengthy commands in their workflows.
