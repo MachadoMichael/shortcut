@@ -7,10 +7,12 @@ import (
 	"strings"
 
 	"github.com/MachadoMichael/shortcut/mapper"
+	tui "github.com/MachadoMichael/shortcut/tui/fancy_list"
 )
 
 func main() {
 
+	tui.Init()
 	m := &mapper.Mapper{}
 
 	dic, err := m.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
