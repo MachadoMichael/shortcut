@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"strings"
 
 	"github.com/MachadoMichael/shortcut/mapper"
 	tui "github.com/MachadoMichael/shortcut/tui/fancy_list"
@@ -14,7 +12,7 @@ func main() {
 
 	m := &mapper.Mapper{}
 
-	dic, err := m.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
+	err := m.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -23,7 +21,7 @@ func main() {
 	numberOfArgs := len(os.Args)
 
 	if numberOfArgs == 1 {
-		tui.Init(dic)
+		tui.Init(m.GetDictionary())
 		return
 	}
 
@@ -37,7 +35,7 @@ func main() {
 			alias := os.Args[2]
 			command := os.Args[3]
 
-			m.InsertInJson(alias, command, dic)
+			m.InsertInJson(alias, command)
 			fmt.Println("The command has been saved")
 			return
 		}
@@ -46,22 +44,18 @@ func main() {
 	if numberOfArgs == 3 {
 		if os.Args[1] == "run" {
 			alias := os.Args[2]
-			command, exist := dic[alias]
-			if !exist {
+			command, err := m.GetCommand(alias)
+			if err != nil {
 				fmt.Println("The command does not exist")
 				return
 			}
 
-			args := strings.Split(command, " ")
-			c := exec.Command(args[0], args[1:]...)
-
-			output, err := c.CombinedOutput()
+			err = executeCommand(command)
 			if err != nil {
-				fmt.Printf("Error executing command: %v\n", err)
+				fmt.Println(err.Error())
 				return
 			}
 
-			fmt.Printf("Command output: %s\n", output)
 			return
 		}
 	}

@@ -2,37 +2,52 @@ package mapper
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"os"
 )
 
-type Mapper struct{}
+type Mapper struct {
+	dic map[string]string
+}
 
-func (m *Mapper) BuildMap(path string) (map[string]string, error) {
+func (m *Mapper) BuildMap(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer file.Close()
 	bytesValue, _ := io.ReadAll(file)
 
-	var dic map[string]string
-	err = json.Unmarshal(bytesValue, &dic)
+	err = json.Unmarshal(bytesValue, &m.dic)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return dic, nil
+
+	return nil
 }
 
-func (m *Mapper) InsertInJson(alias, data string, dic map[string]string) {
-	dic[alias] = data
-	m.saveJson(dic)
+func (m *Mapper) InsertInJson(alias, data string) {
+	m.dic[alias] = data
+	m.saveJson()
 }
 
-func (m *Mapper) saveJson(dic map[string]string) {
-	json_data, _ := json.Marshal(dic)
+func (m *Mapper) saveJson() {
+	json_data, _ := json.Marshal(m.dic)
 	err := os.WriteFile("dictionary.json", json_data, 0644)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (m *Mapper) GetCommand(alias string) (string, error) {
+	if command, ok := m.dic[alias]; ok {
+		return command, nil
+	}
+
+	return "", errors.New("Alias not found")
+}
+
+func (m *Mapper) GetDictionary() map[string]string {
+	return m.dic
 }

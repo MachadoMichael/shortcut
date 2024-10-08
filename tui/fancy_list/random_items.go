@@ -45,7 +45,7 @@ func (r *randomItemGenerator) next() item {
 	return i
 }
 
-func (r *randomItemGenerator) generate(dic map[string]string) []list.Item {
+func (r *randomItemGenerator) read(dic map[string]string) []list.Item {
 	var items []list.Item
 	for k, v := range dic {
 		items = append(items, item{

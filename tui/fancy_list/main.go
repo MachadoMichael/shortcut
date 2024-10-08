@@ -87,7 +87,7 @@ func newModel(dic map[string]string) model {
 	)
 
 	// Make initial list of items
-	items := itemGenerator.generate(dic)
+	items := itemGenerator.read(dic)
 	// Setup list
 	delegate := newItemDelegate(delegateKeys)
 	shortcutsList := list.New(items, delegate, 0, 0)
