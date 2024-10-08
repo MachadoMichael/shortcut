@@ -12,7 +12,6 @@ import (
 
 func main() {
 
-	tui.Init()
 	m := &mapper.Mapper{}
 
 	dic, err := m.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
@@ -22,6 +21,11 @@ func main() {
 	}
 
 	numberOfArgs := len(os.Args)
+
+	if numberOfArgs == 1 {
+		tui.Init(dic)
+		return
+	}
 
 	if numberOfArgs != 3 && numberOfArgs != 4 {
 		fmt.Println("Invalid number of arguments")

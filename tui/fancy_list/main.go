@@ -26,12 +26,12 @@ var (
 )
 
 type item struct {
-	title       string
-	description string
+	title   string
+	command string
 }
 
 func (i item) Title() string       { return i.title }
-func (i item) Description() string { return i.description }
+func (i item) Description() string { return i.command }
 func (i item) FilterValue() string { return i.title }
 
 type listKeyMap struct {
@@ -79,7 +79,7 @@ type model struct {
 	delegateKeys  *delegateKeyMap
 }
 
-func newModel() model {
+func newModel(dic map[string]string) model {
 	var (
 		itemGenerator randomItemGenerator
 		delegateKeys  = newDelegateKeyMap()
@@ -87,18 +87,13 @@ func newModel() model {
 	)
 
 	// Make initial list of items
-	const numItems = 24
-	items := make([]list.Item, numItems)
-	for i := 0; i < numItems; i++ {
-		items[i] = itemGenerator.next()
-	}
-
+	items := itemGenerator.generate(dic)
 	// Setup list
 	delegate := newItemDelegate(delegateKeys)
-	groceryList := list.New(items, delegate, 0, 0)
-	groceryList.Title = "Groceries"
-	groceryList.Styles.Title = titleStyle
-	groceryList.AdditionalFullHelpKeys = func() []key.Binding {
+	shortcutsList := list.New(items, delegate, 0, 0)
+	shortcutsList.Title = "Shortcuts"
+	shortcutsList.Styles.Title = titleStyle
+	shortcutsList.AdditionalFullHelpKeys = func() []key.Binding {
 		return []key.Binding{
 			listKeys.toggleSpinner,
 			listKeys.insertItem,
@@ -110,7 +105,7 @@ func newModel() model {
 	}
 
 	return model{
-		list:          groceryList,
+		list:          shortcutsList,
 		keys:          listKeys,
 		delegateKeys:  delegateKeys,
 		itemGenerator: &itemGenerator,
@@ -180,10 +175,10 @@ func (m model) View() string {
 	return appStyle.Render(m.list.View())
 }
 
-func Init() {
+func Init(dic map[string]string) {
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	if _, err := tea.NewProgram(newModel(), tea.WithAltScreen()).Run(); err != nil {
+	if _, err := tea.NewProgram(newModel(dic), tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
 	}
