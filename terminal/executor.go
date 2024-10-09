@@ -1,4 +1,4 @@
-package main
+package terminal
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func executeCommand(command string) error {
+func Execute(command string) error {
 	args := strings.Split(command, " ")
 	c := exec.Command(args[0], args[1:]...)
 

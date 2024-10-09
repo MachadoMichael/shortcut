@@ -5,14 +5,13 @@ import (
 	"os"
 
 	"github.com/MachadoMichael/shortcut/mapper"
+	"github.com/MachadoMichael/shortcut/terminal"
 	tui "github.com/MachadoMichael/shortcut/tui/fancy_list"
 )
 
 func main() {
 
-	m := &mapper.Mapper{}
-
-	err := m.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
+	err := mapper.Init()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -21,7 +20,7 @@ func main() {
 	numberOfArgs := len(os.Args)
 
 	if numberOfArgs == 1 {
-		tui.Init(m.GetDictionary())
+		tui.Init(mapper.CommandMapper.GetDictionary())
 		return
 	}
 
@@ -35,7 +34,7 @@ func main() {
 			alias := os.Args[2]
 			command := os.Args[3]
 
-			m.InsertInJson(alias, command)
+			mapper.CommandMapper.InsertInJson(alias, command)
 			fmt.Println("The command has been saved")
 			return
 		}
@@ -44,13 +43,13 @@ func main() {
 	if numberOfArgs == 3 {
 		if os.Args[1] == "run" {
 			alias := os.Args[2]
-			command, err := m.GetCommand(alias)
+			command, err := mapper.CommandMapper.GetCommand(alias)
 			if err != nil {
 				fmt.Println("The command does not exist")
 				return
 			}
 
-			err = executeCommand(command)
+			err = terminal.Execute(command)
 			if err != nil {
 				fmt.Println(err.Error())
 				return

@@ -156,6 +156,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case key.Matches(msg, m.keys.insertItem):
 			m.delegateKeys.remove.SetEnabled(true)
+
+			// Add an item
 			newItem := m.itemGenerator.next()
 			insCmd := m.list.InsertItem(0, newItem)
 			statusCmd := m.list.NewStatusMessage(statusMessageStyle("Added " + newItem.Title()))

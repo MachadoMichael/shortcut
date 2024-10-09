@@ -3,12 +3,25 @@ package mapper
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 )
 
+var CommandMapper Mapper
+
 type Mapper struct {
 	dic map[string]string
+}
+
+func Init() error {
+	CommandMapper = Mapper{}
+	err := CommandMapper.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	return nil
 }
 
 func (m *Mapper) BuildMap(path string) error {

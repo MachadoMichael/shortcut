@@ -1,8 +1,8 @@
 package tui
 
 import (
-	"fmt"
-
+	"github.com/MachadoMichael/shortcut/mapper"
+	"github.com/MachadoMichael/shortcut/terminal"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -10,7 +10,7 @@ import (
 
 func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 	d := list.NewDefaultDelegate()
-	fmt.Println(keys, "sadas")
+
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
 		var title string
 
@@ -24,6 +24,15 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		case tea.KeyMsg:
 			switch {
 			case key.Matches(msg, keys.choose):
+				command, err := mapper.CommandMapper.GetCommand(title)
+				if err != nil {
+					return m.NewStatusMessage(statusMessageStyle(err.Error()))
+				}
+
+				err = terminal.Execute(command)
+				if err != nil {
+					return m.NewStatusMessage(statusMessageStyle(err.Error()))
+				}
 				return m.NewStatusMessage(statusMessageStyle("You chose " + title))
 
 			case key.Matches(msg, keys.remove):
