@@ -74,14 +74,14 @@ func newListKeyMap() *listKeyMap {
 
 type model struct {
 	list          list.Model
-	itemGenerator *randomItemGenerator
+	itemGenerator *ItemGenerator
 	keys          *listKeyMap
 	delegateKeys  *delegateKeyMap
 }
 
 func newModel(dic map[string]string) model {
 	var (
-		itemGenerator randomItemGenerator
+		itemGenerator ItemGenerator
 		delegateKeys  = newDelegateKeyMap()
 		listKeys      = newListKeyMap()
 	)

@@ -1,6 +1,8 @@
 package tui
 
 import (
+	"fmt"
+
 	"github.com/MachadoMichael/shortcut/mapper"
 	"github.com/MachadoMichael/shortcut/terminal"
 	"github.com/charmbracelet/bubbles/key"
@@ -29,20 +31,24 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 					return m.NewStatusMessage(statusMessageStyle(err.Error()))
 				}
 
-				err = terminal.Execute(command)
+				output, err := terminal.Execute(command)
 				if err != nil {
 					return m.NewStatusMessage(statusMessageStyle(err.Error()))
 				}
-				return m.NewStatusMessage(statusMessageStyle("You chose " + title))
 
+				fmt.Println(output)
+				return m.NewStatusMessage(statusMessageStyle("Executed " + title + "\n"))
 			case key.Matches(msg, keys.remove):
 				index := m.Index()
 				m.RemoveItem(index)
+				mapper.CommandMapper.Remove(title)
+
 				if len(m.Items()) == 0 {
 					keys.remove.SetEnabled(false)
 				}
 				return m.NewStatusMessage(statusMessageStyle("Deleted " + title))
 			}
+
 		}
 
 		return nil

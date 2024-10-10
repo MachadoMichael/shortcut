@@ -64,3 +64,8 @@ func (m *Mapper) GetCommand(alias string) (string, error) {
 func (m *Mapper) GetDictionary() map[string]string {
 	return m.dic
 }
+
+func (m *Mapper) Remove(alias string) {
+	delete(m.dic, alias)
+	m.saveJson()
+}

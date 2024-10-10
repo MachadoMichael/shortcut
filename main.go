@@ -49,12 +49,13 @@ func main() {
 				return
 			}
 
-			err = terminal.Execute(command)
+			output, err := terminal.Execute(command)
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
 
+			fmt.Println(output)
 			return
 		}
 	}
