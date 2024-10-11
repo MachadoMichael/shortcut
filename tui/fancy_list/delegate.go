@@ -13,6 +13,7 @@ import (
 func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 	d := list.NewDefaultDelegate()
 
+	fmt.Println("Executed ", keys)
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
 		var title string
 
@@ -38,6 +39,7 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 				fmt.Println(output)
 				return m.NewStatusMessage(statusMessageStyle("Executed " + title + "\n"))
+
 			case key.Matches(msg, keys.remove):
 				index := m.Index()
 				m.RemoveItem(index)
