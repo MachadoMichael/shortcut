@@ -1,19 +1,18 @@
 package tui
 
 import (
-	"fmt"
-
 	"github.com/MachadoMichael/shortcut/mapper"
-	"github.com/MachadoMichael/shortcut/terminal"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+type executeCommandMsg struct {
+	command string
+}
+
 func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 	d := list.NewDefaultDelegate()
-
-	fmt.Println("Executed ", keys)
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
 		var title string
 
@@ -26,19 +25,16 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch {
-			case key.Matches(msg, keys.choose):
+			case key.Matches(msg, keys.choose): // When "Enter" is pressed
 				command, err := mapper.CommandMapper.GetCommand(title)
 				if err != nil {
 					return m.NewStatusMessage(statusMessageStyle(err.Error()))
 				}
 
-				output, err := terminal.Execute(command)
-				if err != nil {
-					return m.NewStatusMessage(statusMessageStyle(err.Error()))
+				// Store the command in a variable to execute it after the program quits
+				return func() tea.Msg {
+					return executeCommandMsg{command: command}
 				}
-
-				fmt.Println(output)
-				return m.NewStatusMessage(statusMessageStyle("Executed " + title + "\n"))
 
 			case key.Matches(msg, keys.remove):
 				index := m.Index()
@@ -50,7 +46,6 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 				}
 				return m.NewStatusMessage(statusMessageStyle("Deleted " + title))
 			}
-
 		}
 
 		return nil
