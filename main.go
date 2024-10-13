@@ -49,7 +49,7 @@ func main() {
 				return
 			}
 
-			output, err := terminal.Execute(command)
+			output, err := terminal.ExecuteInteractive(command)
 			if err != nil {
 				fmt.Println(err.Error())
 				return

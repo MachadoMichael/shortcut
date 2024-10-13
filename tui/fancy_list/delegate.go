@@ -31,20 +31,11 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 					return m.NewStatusMessage(statusMessageStyle(err.Error()))
 				}
 
-				// Store the command in a variable to execute it after the program quits
-				return func() tea.Msg {
-					return executeCommandMsg{command: command}
-				}
+				// Store the command in a global variable to execute after the TUI exits
+				commandToRun = command
 
-			case key.Matches(msg, keys.remove):
-				index := m.Index()
-				m.RemoveItem(index)
-				mapper.CommandMapper.Remove(title)
-
-				if len(m.Items()) == 0 {
-					keys.remove.SetEnabled(false)
-				}
-				return m.NewStatusMessage(statusMessageStyle("Deleted " + title))
+				// Quit the TUI
+				return tea.Quit
 			}
 		}
 

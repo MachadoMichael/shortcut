@@ -23,6 +23,7 @@ var (
 	statusMessageStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.AdaptiveColor{Light: "#04B575", Dark: "#04B575"}).
 				Render
+	commandToRun string
 )
 
 type item struct {
@@ -131,23 +132,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case executeCommandMsg:
-		// Quit the TUI and execute the command after quitting
-		return m, func() tea.Msg {
-			// Ensure we quit the TUI before executing the command
-			tea.Quit()
-
-			// Execute the command outside the TUI environment
-			output, err := terminal.ExecuteInteractive(msg.command)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "Error executing command:", err)
-				return nil
-			}
-
-			// Print the output to the terminal
-			fmt.Println(output)
-
-			return tea.Quit()
-		}
+		// First quit the TUI and after it quits, execute the command
+		return m, tea.Quit // Step 1: Quit the TUI
 
 	}
 
@@ -159,45 +145,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
-// func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-// 	var cmds []tea.Cmd
-//
-// 	switch msg := msg.(type) {
-// 	case tea.WindowSizeMsg:
-// 		h, v := appStyle.GetFrameSize()
-// 		m.list.SetSize(msg.Width-h, msg.Height-v)
-//
-// 	case tea.KeyMsg:
-// 		// Handle all key bindings here
-// 		if m.list.FilterState() == list.Filtering {
-// 			break
-// 		}
-//
-// 		// Handle various toggle commands
-// 		// ...
-//
-// 	case executeCommandMsg:
-// 		// Quit the TUI and execute the command
-// 		go func() {
-// 			output, err := terminal.Execute(msg.command)
-// 			if err != nil {
-// 				fmt.Fprintln(os.Stderr, "Error:", err)
-// 				return
-// 			}
-// 			fmt.Println(output)
-// 		}()
-// 		return m, tea.Quit // Close the TUI
-//
-// 	}
-//
-// 	// Default list update
-// 	newListModel, cmd := m.list.Update(msg)
-// 	m.list = newListModel
-// 	cmds = append(cmds, cmd)
-//
-// 	return m, tea.Batch(cmds...)
-// }
-
 func (m model) View() string {
 	return appStyle.Render(m.list.View())
 }
@@ -205,8 +152,24 @@ func (m model) View() string {
 func Init(dic map[string]string) {
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	if _, err := tea.NewProgram(newModel(dic), tea.WithAltScreen()).Run(); err != nil {
+	// Create the program
+	p := tea.NewProgram(newModel(dic), tea.WithAltScreen())
+
+	// Run the TUI program
+	if _, err := p.Run(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
+	}
+
+	// After the TUI has quit, execute the command (if one exists)
+	if commandToRun != "" {
+		output, err := terminal.ExecuteInteractive(commandToRun)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error executing command:", err)
+			os.Exit(1)
+		}
+
+		// Print command output to the terminal
+		fmt.Println(output)
 	}
 }
