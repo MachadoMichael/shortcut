@@ -20,5 +20,5 @@ func ExecuteInteractive(command string) (string, error) {
 		return "", err
 	}
 
-	return "Command executed successfully", nil
+	return command, nil
 }
