@@ -1,5 +1,1 @@
-{
-	"read":"ls -la",
-	"salon-back":"sudo ssh -i ../../Documents/Oracle_back.pem ubuntu@159.112.190.15",
-	"sb":"ssh -i ../../Documents/Oracle_back.pem ubuntu@159.112.190.15"
-}
+{"sb":"sudo ssh -i ../../Documents/Oracle_back.pem ubuntu@159.112.190.15"}

@@ -29,3 +29,21 @@ func Execute(command string) (string, error) {
 
 	return fmt.Sprintf("Command output: %s\n", output), nil
 }
+
+// ExecuteInteractive runs a command interactively, attaching it to the terminal.
+func ExecuteInteractive(command string) (string, error) {
+	cmd := exec.Command("bash", "-c", command)
+
+	// Attach the command's input/output to the current terminal
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	// Run the command and wait for it to complete
+	err := cmd.Run()
+	if err != nil {
+		return "", err
+	}
+
+	return "Command executed successfully", nil
+}
