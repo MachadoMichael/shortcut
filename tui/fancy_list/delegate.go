@@ -36,6 +36,12 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 				// Quit the TUI
 				return tea.Quit
+
+			case key.Matches(msg, keys.remove):
+				mapper.CommandMapper.Remove(title)
+				m.RemoveItem(m.Index())
+				return m.NewStatusMessage(statusMessageStyle("Item removed!"))
+
 			}
 		}
 
