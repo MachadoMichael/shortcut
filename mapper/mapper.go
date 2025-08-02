@@ -16,7 +16,7 @@ type Mapper struct {
 
 func Init() error {
 	CommandMapper = Mapper{}
-	err := CommandMapper.BuildMap("/Users/michael/Projects/shortcut/dictionary.json")
+	err := CommandMapper.BuildMap("dictionary.json")
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
