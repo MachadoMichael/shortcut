@@ -8,7 +8,10 @@ import (
 	"os"
 )
 
-var CommandMapper Mapper
+var (
+	CommandMapper  Mapper
+	DictionaryPath = "SET_PATH_HERE"
+)
 
 type Mapper struct {
 	dic map[string]string
@@ -16,7 +19,7 @@ type Mapper struct {
 
 func Init() error {
 	CommandMapper = Mapper{}
-	err := CommandMapper.BuildMap("dictionary.json")
+	err := CommandMapper.BuildMap(DictionaryPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
@@ -47,7 +50,7 @@ func (m *Mapper) InsertInJson(alias, data string) {
 
 func (m *Mapper) saveJson() {
 	json_data, _ := json.Marshal(m.dic)
-	err := os.WriteFile("dictionary.json", json_data, 0644)
+	err := os.WriteFile(DictionaryPath, json_data, 0644)
 	if err != nil {
 		panic(err)
 	}

@@ -18,6 +18,11 @@ Ensure you have Go version **1.22.2** or later installed. You can download it fr
 
 The application accepts two primary arguments: `save` and `run`.
 
+## First of all set full folder path
+```
+Go to mapper.go and change DictionaryPath to your full root app path
+```
+
 ### Saving an Alias
 
 To save a new alias, use the following command:
